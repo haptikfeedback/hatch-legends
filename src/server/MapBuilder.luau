@@ -28,7 +28,7 @@ local ZONE_THEMES = {
         ground = Color3.fromRGB(100, 181, 96),
         eggColor = Color3.fromRGB(255, 255, 200),
         particleColor = ColorSequence.new(Color3.fromRGB(255, 255, 100), Color3.fromRGB(100, 255, 100)),
-        position = Vector3.new(0, 0, 0),
+        position = Vector3.new(0, 20, 0),
         groundMaterial = Enum.Material.Grass,
     },
     ["Crystal Caves"] = {
@@ -38,7 +38,7 @@ local ZONE_THEMES = {
         ground = Color3.fromRGB(80, 40, 100),
         eggColor = Color3.fromRGB(200, 150, 255),
         particleColor = ColorSequence.new(Color3.fromRGB(200, 100, 255), Color3.fromRGB(100, 200, 255)),
-        position = Vector3.new(300, 0, 0),
+        position = Vector3.new(1024, 20, 0),
         groundMaterial = Enum.Material.Ice,
     },
     Volcano = {
@@ -48,7 +48,7 @@ local ZONE_THEMES = {
         ground = Color3.fromRGB(80, 30, 20),
         eggColor = Color3.fromRGB(255, 120, 50),
         particleColor = ColorSequence.new(Color3.fromRGB(255, 100, 0), Color3.fromRGB(255, 255, 0)),
-        position = Vector3.new(600, 0, 0),
+        position = Vector3.new(0, 20, 1024),
         groundMaterial = Enum.Material.CrackedLava,
     },
     ["Sky Islands"] = {
@@ -58,7 +58,7 @@ local ZONE_THEMES = {
         ground = Color3.fromRGB(200, 230, 255),
         eggColor = Color3.fromRGB(180, 220, 255),
         particleColor = ColorSequence.new(Color3.fromRGB(255, 255, 255), Color3.fromRGB(100, 200, 255)),
-        position = Vector3.new(0, 200, 400),
+        position = Vector3.new(512, 320, 512),
         groundMaterial = Enum.Material.Glacier,
     },
     ["Shadow Realm"] = {
@@ -68,7 +68,7 @@ local ZONE_THEMES = {
         ground = Color3.fromRGB(20, 0, 30),
         eggColor = Color3.fromRGB(100, 0, 150),
         particleColor = ColorSequence.new(Color3.fromRGB(255, 0, 100), Color3.fromRGB(100, 0, 200)),
-        position = Vector3.new(300, 0, 400),
+        position = Vector3.new(1024, 20, 1024),
         groundMaterial = Enum.Material.Slate,
     },
 }
@@ -148,14 +148,16 @@ function MapBuilder._buildSpawn(mapFolder)
     folder.Name = "SpawnArea"
     folder.Parent = mapFolder
 
+    local spawnBase = Vector3.new(0, 20, -100) -- near Grasslands zone
+
     -- Main platform
-    createPart(folder, "SpawnPlatform", Vector3.new(60, 3, 60), Vector3.new(0, -1.5, -80), Color3.fromRGB(100, 200, 255), Enum.Material.SmoothPlastic)
+    createPart(folder, "SpawnPlatform", Vector3.new(60, 3, 60), spawnBase + Vector3.new(0, -1.5, 0), Color3.fromRGB(100, 200, 255), Enum.Material.SmoothPlastic)
 
     -- Checkerboard tiles
     for x = -2, 2 do
         for z = -2, 2 do
             createPart(folder, "Tile", Vector3.new(11, 0.5, 11),
-                Vector3.new(x * 12, 0.3, -80 + z * 12),
+                spawnBase + Vector3.new(x * 12, 0.3, z * 12),
                 (x + z) % 2 == 0 and Color3.fromRGB(150, 230, 255) or Color3.fromRGB(200, 255, 200),
                 Enum.Material.SmoothPlastic
             )
@@ -163,19 +165,19 @@ function MapBuilder._buildSpawn(mapFolder)
     end
 
     -- Welcome sign
-    createPart(folder, "WelcomeSignPost", Vector3.new(3, 12, 3), Vector3.new(0, 6, -105), Color3.fromRGB(139, 90, 43), Enum.Material.Wood)
-    local signBoard = createPart(folder, "WelcomeSignBoard", Vector3.new(20, 8, 1), Vector3.new(0, 14, -105), Color3.fromRGB(255, 215, 0), Enum.Material.Neon)
+    createPart(folder, "WelcomeSignPost", Vector3.new(3, 12, 3), spawnBase + Vector3.new(0, 6, -25), Color3.fromRGB(139, 90, 43), Enum.Material.Wood)
+    local signBoard = createPart(folder, "WelcomeSignBoard", Vector3.new(20, 8, 1), spawnBase + Vector3.new(0, 14, -25), Color3.fromRGB(255, 215, 0), Enum.Material.Neon)
     createBillboard(signBoard, "🐣 HATCH LEGENDS 🐣", Color3.fromRGB(255, 255, 255), UDim2.new(10, 0, 4, 0), Vector3.new(0, 2, 0))
     addSparkles(signBoard, Color3.fromRGB(255, 215, 0))
     addPointLight(signBoard, Color3.fromRGB(255, 215, 0), 2, 30)
 
-    local subSign = createPart(folder, "SubSign", Vector3.new(14, 3, 0.5), Vector3.new(0, 8, -105), Color3.fromRGB(255, 100, 100), Enum.Material.Neon)
+    local subSign = createPart(folder, "SubSign", Vector3.new(14, 3, 0.5), spawnBase + Vector3.new(0, 8, -25), Color3.fromRGB(255, 100, 100), Enum.Material.Neon)
     createBillboard(subSign, "Hatch Eggs • Collect Pets • Be a Legend!", Color3.fromRGB(255, 255, 200), UDim2.new(12, 0, 2, 0), Vector3.new(0, 1, 0))
 
     -- SpawnLocation
     local spawn = Instance.new("SpawnLocation")
     spawn.Size = Vector3.new(12, 1, 12)
-    spawn.Position = Vector3.new(0, 1, -80)
+    spawn.Position = spawnBase + Vector3.new(0, 1, 0)
     spawn.Color = Color3.fromRGB(100, 255, 100)
     spawn.Material = Enum.Material.Neon
     spawn.Transparency = 0.5
@@ -192,7 +194,7 @@ function MapBuilder._buildSpawn(mapFolder)
     for i = 0, 6 do
         local angle = math.rad(i * 30)
         local p = createPart(folder, "Rainbow_" .. i, Vector3.new(2, 2, 2),
-            Vector3.new(math.cos(angle) * 25, math.sin(angle) * 25 + 5, -80),
+            spawnBase + Vector3.new(math.cos(angle) * 25, math.sin(angle) * 25 + 5, 0),
             rainbowColors[i + 1], Enum.Material.Neon
         )
         p.Shape = Enum.PartType.Ball
@@ -203,7 +205,7 @@ function MapBuilder._buildSpawn(mapFolder)
     -- Path to Grasslands
     for i = 0, 8 do
         createPart(folder, "Path_" .. i, Vector3.new(8, 1, 6),
-            Vector3.new(0, -0.5, -50 + i * 7),
+            spawnBase + Vector3.new(0, -0.5, 30 + i * 7),
             i % 2 == 0 and Color3.fromRGB(200, 180, 140) or Color3.fromRGB(180, 160, 120),
             Enum.Material.Cobblestone
         )
@@ -441,61 +443,51 @@ function MapBuilder._buildTeleportPads(mapFolder)
     folder.Name = "TeleportPads"
     folder.Parent = mapFolder
 
-    local zoneOrder = { "Grasslands", "Crystal Caves", "Volcano", "Sky Islands", "Shadow Realm" }
+    -- Teleport connections: each zone connects to its neighbors in the 2x2 grid
+    -- Layout:  Grasslands(0,0)  -- Crystal Caves(1024,0)
+    --          Volcano(0,1024)  -- Shadow Realm(1024,1024)
+    --          Sky Islands(512,320,512) -- center, above
+    local connections = {
+        { from = "Grasslands",    to = "Crystal Caves",  fromOffset = Vector3.new(55, 0.5, 0),   toOffset = Vector3.new(-55, 5, 0) },
+        { from = "Grasslands",    to = "Volcano",        fromOffset = Vector3.new(0, 0.5, 55),   toOffset = Vector3.new(0, 5, -55) },
+        { from = "Crystal Caves", to = "Grasslands",     fromOffset = Vector3.new(-55, 0.5, 0),  toOffset = Vector3.new(55, 5, 0) },
+        { from = "Crystal Caves", to = "Shadow Realm",   fromOffset = Vector3.new(0, 0.5, 55),   toOffset = Vector3.new(0, 5, -55) },
+        { from = "Volcano",       to = "Grasslands",     fromOffset = Vector3.new(0, 0.5, -55),  toOffset = Vector3.new(0, 5, 55) },
+        { from = "Volcano",       to = "Shadow Realm",   fromOffset = Vector3.new(55, 0.5, 0),   toOffset = Vector3.new(-55, 5, 0) },
+        { from = "Shadow Realm",  to = "Crystal Caves",  fromOffset = Vector3.new(0, 0.5, -55),  toOffset = Vector3.new(0, 5, 55) },
+        { from = "Shadow Realm",  to = "Volcano",        fromOffset = Vector3.new(-55, 0.5, 0),  toOffset = Vector3.new(55, 5, 0) },
+        -- Sky Islands connects to all 4 ground zones
+        { from = "Grasslands",    to = "Sky Islands",    fromOffset = Vector3.new(0, 0.5, -40),   toOffset = Vector3.new(0, 5, 0) },
+        { from = "Sky Islands",   to = "Grasslands",     fromOffset = Vector3.new(-40, 0.5, 0),  toOffset = Vector3.new(0, 5, 0) },
+    }
 
-    for i, zoneName in zoneOrder do
-        local theme = ZONE_THEMES[zoneName]
-        local basePos = theme.position
+    for _, conn in connections do
+        local fromTheme = ZONE_THEMES[conn.from]
+        local toTheme = ZONE_THEMES[conn.to]
 
-        if i < #zoneOrder then
-            local nextZone = zoneOrder[i + 1]
-            local nextTheme = ZONE_THEMES[nextZone]
-            local pad = createPart(folder, "TP_" .. zoneName .. "_to_" .. nextZone, Vector3.new(8, 1, 8), basePos + Vector3.new(50, 0.5, 0), nextTheme.accent, Enum.Material.Neon)
-            pad.Shape = Enum.PartType.Cylinder
-            pad.Orientation = Vector3.new(0, 0, 90)
-            addParticles(pad, nextTheme.particleColor, 20, 3, 1, 0.3)
-            addPointLight(pad, nextTheme.accent, 2, 15)
-            createBillboard(pad, "➡️ " .. nextZone, nextTheme.accent, UDim2.new(8, 0, 3, 0), Vector3.new(0, 4, 0))
+        local pad = createPart(folder, "TP_" .. conn.from .. "_to_" .. conn.to, Vector3.new(8, 1, 8), fromTheme.position + conn.fromOffset, toTheme.accent, Enum.Material.Neon)
+        pad.Shape = Enum.PartType.Cylinder
+        pad.Orientation = Vector3.new(0, 0, 90)
+        addParticles(pad, toTheme.particleColor, 20, 3, 1, 0.3)
+        addPointLight(pad, toTheme.accent, 2, 15)
+        createBillboard(pad, "🌀 " .. conn.to, toTheme.accent, UDim2.new(8, 0, 3, 0), Vector3.new(0, 4, 0))
 
-            local dest = Instance.new("Vector3Value")
-            dest.Name = "Destination"
-            dest.Value = nextTheme.position + Vector3.new(-50, 5, 0)
-            dest.Parent = pad
+        local dest = Instance.new("Vector3Value")
+        dest.Name = "Destination"
+        dest.Value = toTheme.position + conn.toOffset
+        dest.Parent = pad
 
-            local req = Instance.new("StringValue")
-            req.Name = "RequiredZone"
-            req.Value = nextZone
-            req.Parent = pad
+        local req = Instance.new("StringValue")
+        req.Name = "RequiredZone"
+        req.Value = conn.to
+        req.Parent = pad
 
-            local prompt = Instance.new("ProximityPrompt")
-            prompt.ObjectText = "Go to " .. nextZone
-            prompt.ActionText = "🌀 Teleport!"
-            prompt.HoldDuration = 0.5
-            prompt.MaxActivationDistance = 12
-            prompt.Parent = pad
-        end
-
-        if i > 1 then
-            local prevZone = zoneOrder[i - 1]
-            local prevTheme = ZONE_THEMES[prevZone]
-            local pad = createPart(folder, "TP_" .. zoneName .. "_to_" .. prevZone, Vector3.new(8, 1, 8), basePos + Vector3.new(-50, 0.5, 0), prevTheme.accent, Enum.Material.Neon)
-            pad.Shape = Enum.PartType.Cylinder
-            pad.Orientation = Vector3.new(0, 0, 90)
-            addParticles(pad, prevTheme.particleColor, 20, 3, 1, 0.3)
-            createBillboard(pad, "⬅️ " .. prevZone, prevTheme.accent, UDim2.new(8, 0, 3, 0), Vector3.new(0, 4, 0))
-
-            local dest = Instance.new("Vector3Value")
-            dest.Name = "Destination"
-            dest.Value = prevTheme.position + Vector3.new(50, 5, 0)
-            dest.Parent = pad
-
-            local prompt = Instance.new("ProximityPrompt")
-            prompt.ObjectText = "Go to " .. prevZone
-            prompt.ActionText = "🌀 Teleport!"
-            prompt.HoldDuration = 0.5
-            prompt.MaxActivationDistance = 12
-            prompt.Parent = pad
-        end
+        local prompt = Instance.new("ProximityPrompt")
+        prompt.ObjectText = "Go to " .. conn.to
+        prompt.ActionText = "🌀 Teleport!"
+        prompt.HoldDuration = 0.5
+        prompt.MaxActivationDistance = 12
+        prompt.Parent = pad
     end
 end
 
