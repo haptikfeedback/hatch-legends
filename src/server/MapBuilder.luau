@@ -507,7 +507,8 @@ function MapBuilder._setupLighting()
     Lighting.Ambient = Color3.fromRGB(50, 50, 60)
     Lighting.Brightness = 2
     Lighting.GlobalShadows = true
-    Lighting.Technology = Enum.Technology.Voxel
+    -- Note: Lighting.Technology must be set manually in Studio (Properties panel)
+    -- Set it to "Voxel" for best kid-friendly look
     Lighting.OutdoorAmbient = Color3.fromRGB(80, 80, 100)
     Lighting.ClockTime = 14
 
